@@ -94,26 +94,111 @@ while True:
             print()
             print()
 
+            # Asking the choice of user
             x = int(input("Enter Your Choice : "))
             print()
+
+            # If the choice of user is 1 / To deposit money
             if x == 1:
+                # Ask the user for the amount to be deposited
                 dep_amt = float(input("Enter Amount To Deposit : "))
+                # Keeping the withdrawal amount as 0
                 wd_amt = 0
+                # Update the cr_amt column of customer_details table by adding the deposit amount to cr_amt
                 dep_qry = f"UPDATE customer_details SET cr_amt = cr_amt + '{float(dep_amt)}' WHERE acc_no = '{int(acc_no)}'"
                 cursor.execute(dep_qry)
+                # Insert the transaction details to the transactions table
                 trans_qry = f"INSERT INTO transactions(acc_no, date, withdrawal_amt, deposit_amt) values('{int(acc_no)}','{date}','{wd_amt}','{float(dep_amt)}')"
                 cursor.execute(trans_qry)
+                # Commit the changes
                 mydb.commit()
                 print("Amount Deposited And Updated Successfully")
             elif x == 2:
+                # Ask the user for the amount to be deposited
                 wd_amt = float(input("Enter Amount To Withdraw : "))
+                # Keeping the deposit amount as 0
                 dep_amt = 0
+                # Update the cr_amt column of customer_details table by deducting the withdrawal amount from cr_amt
                 wd_qry = f"UPDATE customer_details SET cr_amt = cr_amt - '{float(wd_amt)}' WHERE acc_no = '{int(acc_no)}'"
                 cursor.execute(wd_qry)
                 mydb.commit()
+                # Insert the transaction details to the transactions table
                 trans_qry = f"INSERT INTO transactions(acc_no, date, withdrawal_amt, deposit_amt) values('{int(acc_no)}','{date}','{float(wd_amt)}','{dep_amt}')"
                 cursor.execute(trans_qry)
+                # Commit the changes
                 mydb.commit()
                 print("Amount Withdrawn And Updated Successfully")
+
+    # If the selected choice is 3 / To Show Customer Details
+    elif n == 3:
+        acc_no = int(input("Enter Your Account Number : "))
+        print()
+        vw_det_qry = f"SELECT * FROM customer_details where acc_no = '{int(acc_no)}'"
+        cursor.execute(vw_det_qry)
+        if cursor.fetchone() is None:
+            print()
+            print("Account Number Is Not Valid")
+            print()
+        else:
+            vw_det_qry = f"SELECT * FROM customer_details where acc_no = '{int(acc_no)}'"
+            cursor.execute(vw_det_qry)
+            data = cursor.fetchall()
+            for i in data:
+                print('------------------------------')
+                print()
+                print(f"ACCOUNT NUMBER : {i[0]}")
+                print()
+                print(f"ACCOUNT NAME : {i[1]}")
+                print()
+                print(f"PHONE NUMBER : {i[2]}")
+                print()
+                print(f"ADDRESS : {i[3]}")
+                print()
+                print(f"BALANCE AMOUNT : {i[4]}")
+                print()
+                print('------------------------------')
+
+    # If the selected choice is 4 / To Show Transaction Details
+    elif n == 4:
+        acc_no = int(input("Enter Your Account Number : "))
+        print()
+        trans_qry = f"SELECT * FROM customer_details WHERE acc_no = '{str(acc_no)}'"
+        cursor.execute(trans_qry)
+        print()
+        if cursor.fetchone() is None:
+            print("Account Number is Invalid")
+        else:
+            trans_qry = f"SELECT * FROM transactions WHERE acc_no = '{int(acc_no)}'"
+            cursor.execute(trans_qry)
+            data = cursor.fetchall()
+            for i in data:
+                print('------------------------------')
+                print()
+                print(F"ACCOUNT NUMBER : {i[0]}")
+                print()
+                print(F"TRANSACTION DATE : {i[1]}")
+                print()
+                print(F"WITHDRAWAL AMOUNT : {i[2]}")
+                print()
+                print(F"DEPOSIT AMOUNT : {i[3]}")
+                print()
+                print('------------------------------')
+
+    # If the selected choice is 5 / To Delete Bank Account
+    elif n == 5:
+        acc_no = int(input("Enter Your Account Number : "))
+        del_qry = f"DELETE FROM customer_details where acc_no = '{str(acc_no)}'"
+        print()
+        print("Account Deleted Successfully")
+        print()
+
+    # If the selected choice is 6 / To Quit the Application
+    elif n == 6:
+        print("Thank You and Have A Nice Day")
+        quit()
+
+
+
+
 
 
